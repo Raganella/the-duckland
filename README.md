@@ -1,1 +1,1 @@
-# duck-apocalypse
+# The Duckland Project
