@@ -1,14 +1,20 @@
 package agents;
 
 public abstract class Character implements Behaviour{
-    private int hunger;
-    private int mobility;
-    private int[] position;
+    protected int hunger;
+    protected int mobility;
+    protected int[] position;
     private int fieldOfView;
-    public Character() {
-
+    public Character(int hunger, int mobility, int fieldOfView, int[] position) {
+        this.fieldOfView = fieldOfView;
+        this.mobility = mobility;
+        this.hunger = hunger;
+        this.position = position;
     }
-    private final void FinalizeDeath() {
-
+    public final void FinalizeDeath() {
+        this.hunger=0;
+        this.mobility=0;
+        this.fieldOfView=0;
+        this.position = new int[]{-1,-1};
     }
 }

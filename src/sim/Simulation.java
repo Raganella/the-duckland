@@ -3,7 +3,7 @@ package sim;
 public class Simulation {
     static int Time;
     static int ForwardCheck;
-    private Map map;
+    private Maps map;
     private void RunSimulation() {
 
     }
