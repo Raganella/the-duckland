@@ -1,5 +1,7 @@
 package agents;
 
+import sim.Maps;
+
 public abstract class Human extends Character{
     static int numberOfHumans;
     public Human(int hunger, int mobility, int fieldOfView, int[] position) {
@@ -11,4 +13,8 @@ public abstract class Human extends Character{
         EnduckmentOne newDuck = new EnduckmentOne(this);
         // burza mózgów to szkic jak ma to działać, możliwe przeniesienie
     }
+
+
+
+    public abstract int[] Moving(int[] multipliers, int N);
 }

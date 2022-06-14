@@ -1,25 +1,11 @@
 package agents;
 
 public interface Behaviour {
-    private void Feeding() {
-
-    }
-    private void Breeding() {
-
-    }
-    private void Killing() {
-
-    }
-    private void SurvivalRoll() {
-
-    }
-    private void Tracking() {
-
-    }
-    private void Moving() {
-
-    }
-    private void BonusAction() {
-
-    }
+    void Feeding(int time, int i);
+    Character Breeding(Character character);
+    void Killing(Character character);
+    void SurvivalRoll();
+    void Tracking();
+    void BonusAction();
+    int[] Moving(int[] multipliers,int N);
 }
