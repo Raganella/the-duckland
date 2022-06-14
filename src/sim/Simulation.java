@@ -4,6 +4,7 @@ import agents.*;
 import agents.Character;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 
 public class Simulation {
@@ -24,13 +25,12 @@ public class Simulation {
         System.out.println("Podaj ilość iteracji");
         int MaxTime = s.nextInt();
         ArrayList <Character> CharacterList = new ArrayList<>();
-        Map<int[],Integer> Position;
         map = new Maps(N);
 
         // populate map with characters
         Populate(N, rng, CharacterList);
         // tu się kończy
-        Position = frequency(CharacterList);
+        Map<int[], Integer> Position = frequency(CharacterList);
 
         Set<int[]> killingCopy;
         Set<int[]> breedingCopy;
@@ -58,7 +58,7 @@ public class Simulation {
     }
 
     private static void KillingAndBreeding(ArrayList<Character> CharacterList, Map<int[], Integer> Position, Set<int[]> killingCopy, Set<int[]> breedingCopy, Character c) {
-        if(Position.get(c.getPosition()).equals(1)) return;
+        if(Position.get(c.getPosition()) == 1) return;
         if(Position.get(c.getPosition())>1 && killingCopy.contains(c.getPosition())){
             int k=0;
             if(c.getClass().isAssignableFrom(Duck.class)){
@@ -78,10 +78,18 @@ public class Simulation {
         }
         if(Position.get(c.getPosition())>1 && breedingCopy.contains(c.getPosition())){
             int b=0;
-            if(c.getClass().isAssignableFrom(Duck.class)){
-                while(b< CharacterList.size() &&
+            if(c.getClass().isAssignableFrom(Duck.class) &&
+                    !(c.getClass().equals(Egg.class) ||
+                    c.getClass().equals(AcientOne.class) ||
+                    c.getClass().equals(SentientOne.class))
+            ){
+                while(b<CharacterList.size() &&
                         CharacterList.get(b).getPosition()!= c.getPosition() &&
-                        CharacterList.get(b).getClass().isAssignableFrom(Duck.class)) b++;
+                        CharacterList.get(b).getClass().isAssignableFrom(Duck.class) &&
+                        !(CharacterList.get(b).getClass().equals(Egg.class) ||
+                                CharacterList.get(b).getClass().equals(AcientOne.class) ||
+                                CharacterList.get(b).getClass().equals(SentientOne.class))
+                ) b++;
                 Character d = c.Breeding(CharacterList.get(b));
                 CharacterList.add(d);
                 breedingCopy.remove(c.getPosition());
@@ -94,11 +102,21 @@ public class Simulation {
                         CharacterList.get(b).getPosition()!= c.getPosition() &&
                         CharacterList.get(b).getClass().isAssignableFrom(Human.class)) b++;
                 Character h = c.Breeding(CharacterList.get(b));
-                CharacterList.add(h);
-                breedingCopy.remove(c.getPosition());
-                int a = Position.get(h.getPosition());
-                Position.put(h.getPosition(),a+1);
-                Position.remove(h.getPosition(),a);
+                if(!c.getClass().equals(Weakling.class)) {
+                    CharacterList.add(h);
+                    breedingCopy.remove(c.getPosition());
+                    int a = Position.get(h.getPosition());
+                    Position.put(h.getPosition(),a+1);
+                    Position.remove(h.getPosition(),a);
+                }
+                else{
+                    int bf = ((Weakling) c).getBreedingFactor();
+                    for(int i =0;i<bf;i++) CharacterList.add(h);
+                    breedingCopy.remove(c.getPosition());
+                    int a = Position.get(h.getPosition());
+                    Position.put(h.getPosition(),a+bf);
+                    Position.remove(h.getPosition(),a);
+                }
             }
         }
     }
@@ -118,7 +136,7 @@ public class Simulation {
             Position.remove(positionHolder,k);
         }
         else if(k==1)Position.remove(positionHolder,k);
-        newPositionHolder = new int[]{positionHolder[0]+shift[0],positionHolder[1]+shift[1]};
+        newPositionHolder = new int[]{(positionHolder[0]+shift[0])%N,(positionHolder[1]+shift[1])%N};
         if(Position.containsKey(newPositionHolder)){
             k = Position.get(newPositionHolder);
             Position.put(newPositionHolder,k+1);
@@ -151,10 +169,12 @@ public class Simulation {
     }
 
     private static Map<int[], Integer> frequency(ArrayList<Character> CharacterList) {
-        Set<int[]> S = new HashSet<>();
-        Map<int[], Integer> Position = new HashMap<>();
-        CharacterList.forEach((n) -> S.add(n.getPosition()));
-        S.forEach((n) -> Position.put(n,Collections.frequency(CharacterList,n)+1));
+        HashSet<int[]> S = new HashSet<>();
+        Map<int[], Integer> Position;
+        CharacterList.forEach( (n) -> {
+            if(!S.contains(n.getPosition())) S.add(n.getPosition()) ;
+        });
+        Position = S.stream().collect(Collectors.toMap(n -> n, n -> Collections.frequency(CharacterList, n) + 1, (a, b) -> b));
         return Position;
     }
 

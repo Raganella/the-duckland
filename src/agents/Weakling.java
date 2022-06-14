@@ -1,5 +1,7 @@
 package agents;
 
+import java.util.ArrayList;
+
 public class Weakling extends Human{
     private int breedingFactor;
     public Weakling(int x,int y) {
@@ -13,7 +15,6 @@ public class Weakling extends Human{
 
     @Override
     public Character Breeding(Character character) {
-
         return character;
     }
 
@@ -40,5 +41,9 @@ public class Weakling extends Human{
     @Override
     public int[] Moving(int[] multipliers, int N) {
         return new int[0];
+    }
+
+    public int getBreedingFactor() {
+        return breedingFactor;
     }
 }

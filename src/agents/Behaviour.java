@@ -1,5 +1,7 @@
 package agents;
 
+import java.util.ArrayList;
+
 public interface Behaviour {
     void Feeding(int time, int i);
     Character Breeding(Character character);
