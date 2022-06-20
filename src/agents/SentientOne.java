@@ -1,6 +1,6 @@
 package agents;
 
-import java.time.temporal.JulianFields;
+
 import java.util.Random;
 
 public class SentientOne extends Duck{

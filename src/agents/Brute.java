@@ -8,7 +8,7 @@ public class Brute extends Human{
     private final int might;
     public Brute(int x, int y) {
         super(100,5,3,new int[]{x,y});
-        might = new Random().nextInt(10);
+        might = new Random().nextInt(9)+1;
     }
 
     @Override

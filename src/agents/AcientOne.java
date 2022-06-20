@@ -25,9 +25,8 @@ public class AcientOne extends Duck{
     }
 
     @Override
-    public void Killing(Human character) {
+    public void Killing(Character character) {
         if(prayers>=10) {
-            character.Duckification();
             followers++;
             character.setHunger(-10);
             prayers-=10;

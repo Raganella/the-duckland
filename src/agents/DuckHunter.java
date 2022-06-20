@@ -24,10 +24,16 @@ public class DuckHunter extends Duck{
         try {
             Class<? extends Character> c;
             double a = r.nextDouble();
-            if(a<0.444) c = character.getClass();
-            else c = this.getClass();
-            Constructor<?> cons = c.getConstructor(int.class, int.class);
-            return new Egg((Duck) cons.newInstance(position[0], position[1]));
+            if(a<0.444) {
+                c = character.getClass();
+                Constructor<?> cons = c.getConstructor(int.class,int.class);
+                return new Egg((Duck) cons.newInstance(character.getPosition()[0],character.getPosition()[1]));
+            }
+            else {
+                c = this.getClass();
+                Constructor<?> cons = c.getConstructor(int.class,int.class);
+                return new Egg((Duck) cons.newInstance(this.position[0],this.position[1]));
+            }
         } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
             throw new RuntimeException(e);
         }
@@ -43,7 +49,7 @@ public class DuckHunter extends Duck{
         if(position[1]<0) position[1]=(N+position[1])%N;
     }
     @Override
-    public void Killing(Human character) {
+    public void Killing(Character character) {
         double surive = character.SurvivalRoll();
         double kill = Math.pow(new Random().nextDouble(),0.5)+Math.pow(aggression,2);
         int damage = (int) (kill-surive)*100;

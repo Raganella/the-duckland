@@ -2,8 +2,6 @@ package sim;
 
 import agents.*;
 import agents.Character;
-import org.jetbrains.annotations.NotNull;
-
 import java.util.*;
 import java.util.stream.IntStream;
 
@@ -41,13 +39,23 @@ public class Simulation {
             SetCopies(N, Position, killingCopy, breedingCopy);
             for (int j = 0; j < CharacterList.size(); j++) {
                 Character c = CharacterList.get(j);
+                if(c==null){
+                    CharacterList.remove(c);
+                    continue;
+                }
+                if (c.getHunger() <= 0 || c.getPosition()[0]<0 || c.getPosition()[1]<0) {
+                    c.FinalizeDeath();
+                    CharacterList.remove(c);
+                    continue;
+                }
                 Dislocation(N, Position, c);
                 c.Feeding(Time, map.fields[c.getPosition()[0]][c.getPosition()[1]].getMultiplier()[2]);
                 KillingAndBreeding(CharacterList, Position, killingCopy, breedingCopy, c);
-                if (c.getHunger() <= 0) {
+                if (c.getHunger() <= 0 || c.getPosition()[0]<0 || c.getPosition()[1]<0) {
                     Position[c.getPosition()[0]][c.getPosition()[1]]--;
                     c.FinalizeDeath();
                     CharacterList.remove(c);
+                    continue;
                 }
                 if (c.getClass() == Egg.class) {
                     CharacterList.remove(c);
@@ -75,31 +83,37 @@ public class Simulation {
         if(Position[c.getPosition()[0]][c.getPosition()[1]] <= 1) return;
         if(Position[c.getPosition()[0]][c.getPosition()[1]]>1 && killingCopy.contains(s1)){
             int k=0;
-            if(c.getClass().isAssignableFrom(Duck.class)){
+            if(Duck.class.isAssignableFrom(c.getClass())){
                 while(k< CharacterList.size() &&
                         CharacterList.get(k).getPosition()!= c.getPosition() &&
-                        CharacterList.get(k).getClass().isAssignableFrom(Human.class)) k++;
+                        Human.class.isAssignableFrom(CharacterList.get(k).getClass())) k++;
                 c.Killing(CharacterList.get(k));
                 killingCopy.remove(s1);
             }
-            if(c.getClass().isAssignableFrom(Human.class)){
+            if(Human.class.isAssignableFrom(c.getClass())){
                 while(k< CharacterList.size() &&
                         CharacterList.get(k).getPosition()!= c.getPosition() &&
-                        CharacterList.get(k).getClass().isAssignableFrom(Duck.class)) k++;
+                        Duck.class.isAssignableFrom(CharacterList.get(k).getClass())) k++;
                 c.Killing(CharacterList.get(k));
                 killingCopy.remove(s1);
             }
         }
         if(Position[c.getPosition()[0]][c.getPosition()[1]]>1 && breedingCopy.contains(s1)){
             int b=0;
-            if(c.getClass().isAssignableFrom(Duck.class) &&
+            if(c.getClass()== AcientOne.class){
+                int f = ((AcientOne) c).GetFollowers();
+                Character e = c.Breeding(null);
+                IntStream.range(0,f).forEach( (n) ->{
+                    CharacterList.add(e);
+                    Position[c.getPosition()[0]][c.getPosition()[1]]++;});
+            }
+            if(Duck.class.isAssignableFrom(c.getClass()) &&
                     !(c.getClass().equals(Egg.class) ||
-                    c.getClass().equals(AcientOne.class) ||
-                    c.getClass().equals(SentientOne.class))
-            ){
+                     c.getClass().equals(SentientOne.class))
+            ) {
                 while(b<CharacterList.size() &&
                         CharacterList.get(b).getPosition()!= c.getPosition() &&
-                        CharacterList.get(b).getClass().isAssignableFrom(Duck.class) &&
+                        !Duck.class.isAssignableFrom(CharacterList.get(b).getClass()) &&
                         !(CharacterList.get(b).getClass().equals(Egg.class) ||
                                 CharacterList.get(b).getClass().equals(AcientOne.class) ||
                                 CharacterList.get(b).getClass().equals(SentientOne.class))
@@ -109,10 +123,10 @@ public class Simulation {
                 breedingCopy.remove(s1);
                 Position[d.getPosition()[0]][d.getPosition()[1]]++;
             }
-            if(c.getClass().isAssignableFrom(Human.class)){
+            if(Human.class.isAssignableFrom(c.getClass())){
                 while(b< CharacterList.size() &&
                         CharacterList.get(b).getPosition()!= c.getPosition() &&
-                        CharacterList.get(b).getClass().isAssignableFrom(Human.class)) b++;
+                        !Human.class.isAssignableFrom(CharacterList.get(b).getClass())) b++;
                 Character h = c.Breeding(CharacterList.get(b));
                 if(!c.getClass().equals(Weakling.class)) {
                     CharacterList.add(h);
@@ -128,24 +142,17 @@ public class Simulation {
             }
 
         }
-        if(c.getClass()== AcientOne.class){
-            int f = ((AcientOne) c).GetFollowers();
-            Character e = c.Breeding(null);
-            IntStream.range(0,f).forEach( (n) ->{
-                CharacterList.add(e);
-                Position[c.getPosition()[0]][c.getPosition()[1]]++;});
-        }
     }
 
-    private static void Dislocation(int N, int[][] Position, @NotNull Character c) {
+    private static void Dislocation(int N, int[][] Position, Character c) {
         int[] positionHolder;
         int[] multiplierHolder;
         int[] newPositionHolder;
         positionHolder = new int[]{c.getPosition()[0],c.getPosition()[1]};
         multiplierHolder = map.CheckTile(positionHolder);
+        Position[positionHolder[0]][positionHolder[1]]--;
         c.Moving(multiplierHolder, N);
         newPositionHolder = c.getPosition();
-        Position[positionHolder[0]][positionHolder[1]]--;
         Position[newPositionHolder[0]][newPositionHolder[1]]++;
     }
 

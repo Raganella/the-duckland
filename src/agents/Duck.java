@@ -35,10 +35,16 @@ public abstract class Duck extends Character{
         try {
             Class<? extends Character> c;
             double a = r.nextDouble();
-            if(a<0.5) c = character.getClass();
-            else c = this.getClass();
-            Constructor<?> cons = c.getConstructor(int.class, int.class);
-            return new Egg((Duck) cons.newInstance(position[0], position[1]));
+            if(a<0.5) {
+                c = character.getClass();
+                Constructor<?> cons = c.getConstructor(int.class,int.class);
+                return new Egg((Duck) cons.newInstance(character.getPosition()[0],character.getPosition()[1]));
+            }
+            else {
+                c = this.getClass();
+                Constructor<?> cons = c.getConstructor(int.class,int.class);
+                return new Egg((Duck) cons.newInstance(this.position[0],this.position[1]));
+            }
         } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
             throw new RuntimeException(e);
         }
@@ -54,17 +60,13 @@ public abstract class Duck extends Character{
         if(position[1]<0) position[1]=(N+position[1])%N;
     }
     @Override
-    public void Killing(Human character) {
+    public void Killing(Character character) {
         double surive = character.SurvivalRoll();
         double kill = new Random().nextDouble()+(double)aggression/5;
         int damage = (int) (kill-surive)*50;
         if(damage<0) this.hunger+=damage;
         else character.setHunger(character.getHunger()-damage);
     }
-    @Override
-    public void Killing(Duck duck){}
-    @Override
-    public void Killing(Character c){}
     @Override
     public Duck BonusAction(Human h){return null;}
 }

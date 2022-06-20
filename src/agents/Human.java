@@ -10,11 +10,6 @@ public abstract class Human extends Character{
         super( hunger, mobility, fieldOfView, position);
         numberOfHumans++;
     }
-    // statystyki poszczególnych ludzi do przegadania
-    public EnduckmentOne Duckification() {
-        this.FinalizeDeath();
-        return new EnduckmentOne(this);
-    }
 
     @Override
     public void Moving(int[] multipliers, int N){
@@ -47,7 +42,7 @@ public abstract class Human extends Character{
     }
 
     @Override
-    public void Killing(Duck character) {
+    public void Killing(Character character) {
         double surive = character.SurvivalRoll();
         double kill = new Random().nextDouble();
         int damage = (int) (kill-surive)*50;
@@ -60,6 +55,5 @@ public abstract class Human extends Character{
     }
     @Override
     public Duck BonusAction(Human h) {return null;}
-    @Override public void Killing(Human h){}
-    @Override public void Killing(Character c){}
-}
+
+    }

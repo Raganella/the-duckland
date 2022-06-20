@@ -45,7 +45,4 @@ public class Egg extends Duck{
     @Override
     public void Killing(Character character) {}
 
-    public Duck getOffspring() {
-        return offspring;
     }
-}

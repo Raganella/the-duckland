@@ -9,38 +9,13 @@ public class RegularHuman extends Human{
         this.luck = new Random().nextDouble();
     }
     @Override
-    public int[] Moving(int[] multipliers,int N){
+    public void Moving(int[] multipliers, int N){
         Random r = new Random();
         int _X = (int) ((multipliers[0]*(r.nextInt(20)-10)+this.fieldOfView/multipliers[1])%(this.mobility+1)+10*this.luck);
         int _Y = (int) ((multipliers[0]*(r.nextInt(20)-10)+this.fieldOfView/multipliers[1])%(this.mobility+1)+10*this.luck);
         this.position[0]= (this.position[0]+_X)%N;
         this.position[1]= (this.position[1]+_Y)%N;
-        return new int[]{_X,_Y};
+        if(position[0]<0) position[0]=(N+position[0])%N;
+        if(position[1]<0) position[1]=(N+position[1])%N;
     }
-
-    @Override
-    public void Feeding(int time, int i) {
-
-    }
-
-    @Override
-    public Character Breeding(Character character) {int i = 1;
-        return character;
-    }
-
-    @Override
-    public void Killing(Character character) {
-        int i = 1;
-    }
-
-    @Override
-    public void SurvivalRoll() {
-        int i = 1;
-    }
-
-    @Override
-    public void Tracking() {}
-    int i = 1;
-    @Override
-    public void BonusAction() {int i = 1;}
 }
