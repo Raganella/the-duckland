@@ -29,4 +29,5 @@ public abstract class Character implements Behaviour{
     public int[] getPosition() {
         return position;
     }
+
 }

@@ -1,5 +1,7 @@
 package agents;
 
+import java.util.Random;
+
 public class RegularDuck extends Duck{
     public RegularDuck(int x,int y) {
         super(25,2,2,3,new int[]{x,y});
@@ -7,37 +9,7 @@ public class RegularDuck extends Duck{
 
     @Override
     public void Feeding(int time, int i) {
-
-    }
-
-    @Override
-    public Character Breeding(Character character) {
-
-        return character;
-    }
-
-    @Override
-    public void Killing(Character character) {
-
-    }
-
-    @Override
-    public void SurvivalRoll() {
-
-    }
-
-    @Override
-    public void Tracking() {
-
-    }
-
-    @Override
-    public void BonusAction() {
-
-    }
-
-    @Override
-    public int[] Moving(int[] multiplier, int N) {
-        return new int[0];
+        if(time%2==1) this.hunger+=i+aggression/3;
+        else this.hunger-=i;
     }
 }
